@@ -8,32 +8,33 @@
 root/
  ├── data/                       
  │    ├── raw/
+ │    │    ├── team_strength_weight
+ │    │    └── KDA_weight
  │    └── processed/
+ │         ├── unweighted/
+ │         │    ├── win_pair.csv
+ │         │    ├── lose_pair.csv
+ │         │    ├── total_pair.csv
+ │         │    └── win_rate_pair.csv
+ │         ├── team_strength_weighted/
+ │         │    └── ...
+ │         ├── KDA_weighted/
+ │         │    └── ...
+ │         └── integrated/
+ │              └── paired_matching_scores.csv
  │
  ├── src/ 
  │    ├── common_functions.R 
  │    ├── data_collecting.R
  │    ├── data_processing.R
- │    ├── network_analysis.R
  │    └── visualization.R
  │
  ├── app/
  │    ├── server.R
  │    └── ui.R
  │
- ├── outputs/                   
- │    ├── 
- │    │    ├── 
- │    │    ├── 
- │    │    └── 
- │    ├── 
- │    │    ├── 
- │    │    ├── 
- │    │    └── 
- │    └── 
- │         ├── 
- │         ├── 
- │         └── ...
+ ├── outputs/
+ │    └── r_shiny_dashboard_link.txt
  │
  ├── reports/                    
  │    ├── report.pdf
