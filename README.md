@@ -5,21 +5,41 @@
 
 ## Repository Structure
 ```plaintext
-commercial_lease_DID_analysis/
-├── data/
-│   ├── raw/
-│   ├── processed/
-├── scripts/
-│   ├── data_collection.R      
-│   ├── data_processing.R      
-│   ├── analysis.R              
-│   ├── visualization.R        
-├── app/
-│   ├── server.R
-│   ├── ui.R
-├── reports/
-│   ├── report.pdf
-│   ├── presentation.pdf
-├── README.md
-├── .gitignore
+root/
+ ├── data/                       
+ │    ├── raw/
+ │    └── processed/
+ │
+ ├── src/ 
+ │    ├── common_functions.R 
+ │    ├── data_collecting.R
+ │    ├── data_processing.R
+ │    ├── network_analysis.R
+ │    └── visualization.R
+ │
+ ├── app/
+ │    ├── server.R
+ │    └── ui.R
+ │
+ ├── outputs/                   
+ │    ├── 
+ │    │    ├── 
+ │    │    ├── 
+ │    │    └── 
+ │    ├── 
+ │    │    ├── 
+ │    │    ├── 
+ │    │    └── 
+ │    └── 
+ │         ├── 
+ │         ├── 
+ │         └── ...
+ │
+ ├── reports/                    
+ │    ├── report.pdf
+ │    └── slides.pdf
+ │
+ ├── main_script.R
+ ├── README.md               
+ └── .gitignore   
 ```
