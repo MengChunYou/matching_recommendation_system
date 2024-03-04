@@ -56,7 +56,8 @@ root/
 ```
 
 - `reports/`: This directory contains presentation slides and report written in Traditional Chinese.
-
+- `outputs/r_shiny_dashboard_link.txt`: This directory contains a link to the hero selection recommendation system built with R Shiny Dashboard.
+- 
 ## Required Packages
 
 - igraph
