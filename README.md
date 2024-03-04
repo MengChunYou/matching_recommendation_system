@@ -1,6 +1,6 @@
 # matching_recommendation_system
 
-This repository contains the final project for the [Network Data Analysis and Models](https://wenlab501.github.io/teaching.html#_8) course instructed by [Tzai-Hung WEN](https://homepage.ntu.edu.tw/~wenthung/index.htm), focusing on using network analysis to understand the compatibility of hero pairs and establish a hero selection recommendation system.
+This repository contains the final project for the [Network Data Analysis and Models](https://wenlab501.github.io/teaching.html#_8) course instructed by [Tzai-Hung WEN](https://homepage.ntu.edu.tw/~wenthung/index.htm), which took place from March to June 2021. The project focuses  on using network analysis to understand the compatibility of hero pairs and establish a hero selection recommendation system.
 
 ## Table of Contents
 
