@@ -18,9 +18,13 @@ Dota 2 is a multiplayer online battle arena game, and its market value is reflec
 root/
  ├── data/                       
  │    ├── raw/
- │    │    ├── team_strength_weight
- │    │    └── KDA_weight
+ │    │    ├── matches/
+ │    │    ├── picked_heros.Rdata
+ │    │    └── team_points.csv
  │    └── processed/
+ │         ├── weight/
+ │         │    ├── team_strength_weight.Rdata
+ │         │    └── KDA_weight.Rdata
  │         ├── unweighted/
  │         │    ├── win_pair.csv
  │         │    ├── lose_pair.csv
@@ -31,17 +35,15 @@ root/
  │         ├── KDA_weighted/
  │         │    └── ...
  │         └── integrated/
- │              └── paired_matching_scores.csv
+ │               └── paired_matching_scores.csv
  │
  ├── src/ 
- │    ├── common_functions.R 
  │    ├── data_collecting.R
- │    ├── data_processing.R
- │    └── visualization.R
+ │    └── data_processing.R
  │
  ├── app/
- │    ├── hero.Rdata
- │    ├── edgelist.Rdata
+ │    ├── heroes.Rdata
+ │    ├── picked_heroes.Rdata
  │    ├── server.R
  │    └── ui.R
  │

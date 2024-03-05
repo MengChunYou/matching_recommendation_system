@@ -1,11 +1,6 @@
-# Author：Wei-Jye Goy
-
-# import packages
-library(tidyverse)
+# Import packages
 library(httr)
 library(jsonlite)
-library(igraph)
-library(magrittr)
 
 # THE ANIMAJOR ID
 TAM1_url <-
@@ -146,193 +141,17 @@ DOTA <- function(ID) {
   }
   return(BP_list)
 }
-# BP_list <- DOTA(DPC_S2)
-# save(BP_list, file = "./data/raw/picked_heros/BP_list.Rdata")
-load("./data/raw/picked_heros/BP_list.Rdata")
+# picked_heroes <- DOTA(DPC_S2)
+# save(picked_heroes, file = "./data/raw/picked_heroes.Rdata")
 
-
-# TEAMS WEIGHT & HEROES
-pts <- read.csv("./data/raw/team_points/Points.csv")
-colnames(pts) <- c("Teams", "Points")
-pts$rating <- pts$Points
-pts$Teams <- as.character(pts$Teams)
-pts$Teams[27] <- c("Infamous Gaming")
-pts$Teams[36] <- c("sadboys")
-pts$Teams[50] <- c("Lilgun ")
-pts$Teams[52] <- c("Ωmega Esports")
-pts$Teams[60] <- c("Winstrike Team")
-
+# heroes
 hero_url <- "https://api.opendota.com/api/heroes"
 hero <- fromJSON(hero_url)
-hero <-
+heroes <-
   data.frame(
     "id" = as.character(hero$id),
     "name" = as.character(hero$localized_name),
     "Attr" = hero$primary_attr
   )
 hero_name <- as.character(hero$name)
-
-# Weight (Winning)
-
-## Only Winning Team (LIST)
-Win_list <- vector("list", length(DPC_S2))
-WIN <- function(WIN) {
-  for (i in 1:length(WIN)) {
-    Win_list[[i]] <- WIN[[i]][which(WIN[[i]]$victory == 1), ]
-  }
-  return(Win_list)
-}
-Win_list <- WIN(BP_list)
-
-## Only Winning Team Name (Character)
-Win_team <- c(1:length(DPC_S2))
-WT <- function(WT) {
-  for (i in 1:length(WT)) {
-    for (u in 1:nrow(WT[[i]])) {
-      Win_team[i] <- WT[[i]][u, ]$team_name
-    }
-  }
-  return(Win_team)
-}
-Win_team <- WT(Win_list)
-
-
-## Winning Team Weight
-Win_Rating <- c(1:length(Win_team))
-WR <- function(W) {
-  for (i in 1:length(W)) {
-    Win_Rating[i] <- pts$rating[which(pts$Teams == W[i])]
-  }
-  return(Win_Rating)
-}
-Win_Rating <- WR(Win_team)
-
-# Weight (Losing)
-
-## Only Losing Team (LIST)
-Lose_list <- vector("list", length(DPC_S2))
-Lose <- function(LOSE) {
-  for (i in 1:length(LOSE)) {
-    Lose_list[[i]] <- LOSE[[i]][which(LOSE[[i]]$victory == 0), ]
-  }
-  return(Lose_list)
-}
-Lose_list <- Lose(BP_list)
-
-## Only Winning Team Name (Character)
-Lose_team <- c(1:length(DPC_S2))
-LT <- function(LT) {
-  for (i in 1:length(LT)) {
-    for (u in 1:nrow(LT[[i]])) {
-      Lose_team[i] <- LT[[i]][u, ]$team_name
-    }
-  }
-  return(Lose_team)
-}
-Lose_team <- WT(Lose_list)
-
-## Winning Team Weight
-Lose_Rating <- c(1:length(Lose_team))
-LR <- function(L) {
-  for (i in 1:length(L)) {
-    Lose_Rating[i] <- pts$rating[which(pts$Teams == L[i])]
-  }
-  return(Lose_Rating)
-}
-Lose_Rating <- LR(Lose_team)
-
-Weight1 <- Win_Rating - Lose_Rating
-Weight2 <- Weight1 - min(Weight1)
-Weight3 <- Weight2/max(Weight2)
-Weight <- 1/(Weight3+1)
-
-# KDA Weight
-KDA_WIN <- c(1:length(DPC_S2))
-for (i in 1:length(DPC_S2)) {
-  KDA_WIN[i] <- sum(Win_list[[i]]$kda)
-}
-KDA_LOSE <- c(1:length(DPC_S2))
-for (i in 1:length(DPC_S2)) {
-  KDA_LOSE[i] <- 1 / sum(Lose_list[[i]]$kda)
-}
-
-KDA <- KDA_WIN - KDA_LOSE
-KDA <- KDA/max(KDA)
-
-# Tournament Winning Matrix
-
-## Tournament Matrix
-M_Win <-
-  matrix(0, length(hero$id), length(DPC_S2)) %>% as.data.frame()
-row.names(M_Win) <- hero$id
-
-for (i in 1:length(DPC_S2)) {
-  colnames(M_Win)[i] <- Win_list[[i]]$match_id[1] %>% as.character()
-  M_Win[c(as.character(Win_list[[i]]$hero_id)), Win_list[[i]]$match_id[1] %>% as.character()] = 1
-}
-
-M_Win2 <- M_Win
-for (i in 1:length(DPC_S2)) {
-  M_Win2[, i] <-
-    M_Win[, i] * Weight[i] * 0.4 + M_Win[, i] * KDA[i] * 0.2
-}
-M_Win <- M_Win %>% as.matrix()
-M_Win2 <- M_Win2 %>% as.matrix()
-
-input_win_matrix = M_Win2 %*% t(M_Win)
-for (i in hero$id) {
-  input_win_matrix[i, i] = 0
-}
-
-# Tournament Total
-M_Win_WW <- M_Win
-for (i in 1:length(DPC_S2)) {
-  M_Win_WW[, i] <- M_Win[, i]
-}
-M_Win <- M_Win %>% as.matrix()
-M_Win_WW <- M_Win %>% as.matrix()
-
-input_win_ww_matrix = M_Win_WW %*% t(M_Win)
-for (i in hero$id) {
-  input_win_ww_matrix[i, i] = 0
-}
-
-M_Lose <- matrix(0,length(hero$id),length(DPC_S2)) %>% as.data.frame()
-row.names(M_Lose) <- hero$id
-
-for(i in 1:length(DPC_S2)){
-  colnames(M_Lose)[i] <- Lose_list[[i]]$match_id[1] %>% as.character()
-  M_Lose[c(as.character(Lose_list[[i]]$hero_id)),Lose_list[[i]]$match_id[1] %>% as.character()] = 1
-}
-
-M_Lose_WW <- M_Lose
-for (i in 1:length(DPC_S2)) {
-  M_Lose_WW[, i] <- M_Lose[, i]
-}
-M_Lose <- M_Lose %>% as.matrix()
-M_Lose_WW <- M_Lose_WW %>% as.matrix()
-
-input_lose_ww_matrix = M_Lose_WW %*% t(M_Lose)
-for (i in hero$id) {
-  input_lose_ww_matrix[i, i] = 0
-}
-
-# Tournament IGRAPH & Edgelist
-HWN <- graph.adjacency(adjmatrix = input_win_matrix,
-                       mode = "upper",
-                       weighted = TRUE)
-
-V(HWN)$name <- hero_name
-win_edgelist <- as_edgelist(HWN) %>% as.data.frame()
-win_edgelist$weight <- E(HWN)$weight 
-
-input_total_matrix <- input_win_ww_matrix/( input_lose_ww_matrix + input_win_ww_matrix)
-input_total_matrix[is.nan(input_total_matrix)] <- 0
-HTN <- graph.adjacency(adjmatrix = input_total_matrix,
-                       mode = "upper",
-                       weighted = TRUE)
-V(HTN)$name <- hero_name
-total_edgelist <- as_edgelist(HTN) %>% as.data.frame()
-total_edgelist$win_rate <- E(HTN)$weight
-
-total_edgelist$score <- total_edgelist$win_rate*0.4 + win_edgelist$weight
+# save(heroes, file = "./app/heroes.Rdata")

@@ -1,3 +1,7 @@
+##################################
+# Author: Meng-Chun (Angela) You #
+##################################
+
 # Import packages
 library(shiny)
 library(igraph)
@@ -7,10 +11,10 @@ library(egor)
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
 # Load data
-load("hero.Rdata")
-load("edgelist.Rdata")
+load("heros.Rdata")
+load("paired_matching_scores.Rdata")
 nodes = hero
-edges = total_edgelist[, c(1,2,4)]
+edges = paired_matching_scores[, c(1,2,4)]
 colnames(edges) = c("from", "to", "score")
 edges$from = as.vector(edges$from)
 edges$to = as.vector(edges$to)
