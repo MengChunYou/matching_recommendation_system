@@ -40,6 +40,8 @@ root/
  │    └── visualization.R
  │
  ├── app/
+ │    ├── hero.Rdata
+ │    ├── edgelist.Rdata
  │    ├── server.R
  │    └── ui.R
  │
@@ -62,9 +64,11 @@ root/
 
 - igraph
 - dplyr
+- shiny
+- egor
 
 Download the required packages by running the following command in R:
 
 ``` plaintext
-install.packages(c("igraph", "dplyr"))
+install.packages(c("igraph", "dplyr", "shiny", "egor"))
 ```
