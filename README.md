@@ -43,7 +43,7 @@ root/
  │
  ├── app/
  │    ├── heroes.Rdata
- │    ├── picked_heroes.Rdata
+ │    ├── paired_matching_scores.Rdata
  │    ├── server.R
  │    └── ui.R
  │
