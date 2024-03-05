@@ -57,9 +57,10 @@ root/
  └── .gitignore   
 ```
 
-- `reports/`: This directory contains presentation slides and report written in Traditional Chinese.
+- `app/`: This directory contains codes and data to develope R Shiny Dashboard.
 - `outputs/r_shiny_dashboard_link.txt`: This directory contains a link to the hero selection recommendation system built with R Shiny Dashboard.
-- 
+- `reports/`: This directory contains presentation slides and report written in Traditional Chinese.
+
 ## Required Packages
 
 - igraph
