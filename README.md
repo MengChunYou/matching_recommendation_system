@@ -60,10 +60,9 @@ root/
 - igraph
 - magrittr
 - shiny
-- egor
 
 Download the required packages by running the following command in R:
 
 ``` plaintext
-install.packages(c("httr", "jsonlite", "tidyverse", "dplyr", "igraph", "magrittr", "shiny", "egor"))
+install.packages(c("httr", "jsonlite", "tidyverse", "dplyr", "igraph", "magrittr", "shiny"))
 ```
