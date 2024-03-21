@@ -1,11 +1,6 @@
-##################################
-# Author: Meng-Chun (Angela) You #
-##################################
-
 # Import packages
 library(shiny)
 library(igraph)
-library(egor)
 
 # Set working directory to source file location
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
