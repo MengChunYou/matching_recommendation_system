@@ -21,25 +21,13 @@ root/
  │    │    ├── matches/
  │    │    ├── picked_heros.Rdata
  │    │    └── team_points.csv
- │    └── processed/
- │         ├── weight/
- │         │    ├── team_strength_weight.Rdata
- │         │    └── KDA_weight.Rdata
- │         ├── unweighted/
- │         │    ├── win_pair.csv
- │         │    ├── lose_pair.csv
- │         │    ├── total_pair.csv
- │         │    └── win_rate_pair.csv
- │         ├── team_strength_weighted/
- │         │    └── ...
- │         ├── KDA_weighted/
- │         │    └── ...
- │         └── integrated/
- │               └── paired_matching_scores.csv
+ │    └── weight/
+ │         ├── team_strength_weight.Rdata
+ │         └── KDA_weight.Rdata
  │
  ├── src/ 
  │    ├── data_collecting.R
- │    └── data_processing.R
+ │    └── network_analysis.R
  │
  ├── app/
  │    ├── heroes.Rdata
@@ -65,17 +53,17 @@ root/
 
 ## Required Packages
 
-- tidyverse
 - httr
 - jsonlite
+- tidyverse
+- dplyr
 - igraph
 - magrittr
-- dplyr
 - shiny
 - egor
 
 Download the required packages by running the following command in R:
 
 ``` plaintext
-install.packages(c("tidyverse", "httr", "jsonlite", "igraph", "magrittr", "dplyr", "shiny", "egor"))
+install.packages(c("httr", "jsonlite", "tidyverse", "dplyr", "igraph", "magrittr", "shiny", "egor"))
 ```

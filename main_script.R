@@ -7,6 +7,6 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 source("src/data_collecting.R")
 
 # 2: Calculate matching scores for paired heroes based on raw data.
-source("src/data_processing.R")
+source("src/network_analysis.R")
 
 # end of main_script.R

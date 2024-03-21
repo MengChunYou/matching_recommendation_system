@@ -1,6 +1,6 @@
 # Import packages
-# library(tidyverse)
-# library(igraph)
+library(tidyverse)
+library(igraph)
 library(magrittr)
 
 # Load data
@@ -77,7 +77,7 @@ Weight1 <- win_team_points - lose_team_points
 Weight2 <- Weight1 - min(Weight1)
 Weight3 <- Weight2/max(Weight2)
 team_strength_weight <- 1/(Weight3+1)
-save(team_strength_weight, file = "./data/processed/team_strength_weight.Rdata")
+save(team_strength_weight, file = "./data/weight/team_strength_weight.Rdata")
 
 # KDA Weight
 KDA_WIN <- c(1:n_matches)
@@ -91,9 +91,9 @@ for (i in 1:n_matches) {
 
 KDA <- KDA_WIN - KDA_LOSE
 KDA_weight <- KDA/max(KDA)
-save(KDA_weight, file = "./data/processed/KDA_weight.Rdata")
+save(KDA_weight, file = "./data/weight/KDA_weight.Rdata")
 
-# Tournament Matrix
+# Paired Win Rate
 M_Win <-
   matrix(0, length(hero$id), n_matches) %>% as.data.frame()
 row.names(M_Win) <- hero$id
@@ -116,56 +116,55 @@ for (i in hero$id) {
   input_win_matrix[i, i] = 0
 }
 
-# # Tournament Total
-# M_Win_WW <- M_Win
-# for (i in 1:n_matches) {
-#   M_Win_WW[, i] <- M_Win[, i]
-# }
-# M_Win <- M_Win %>% as.matrix()
-# M_Win_WW <- M_Win %>% as.matrix()
-# 
-# input_win_ww_matrix = M_Win_WW %*% t(M_Win)
-# for (i in hero$id) {
-#   input_win_ww_matrix[i, i] = 0
-# }
-# 
-# M_Lose <- matrix(0,length(hero$id),n_matches) %>% as.data.frame()
-# row.names(M_Lose) <- hero$id
-# 
-# for(i in 1:n_matches){
-#   colnames(M_Lose)[i] <- Lose_list[[i]]$match_id[1] %>% as.character()
-#   M_Lose[c(as.character(Lose_list[[i]]$hero_id)),Lose_list[[i]]$match_id[1] %>% as.character()] = 1
-# }
-# 
-# M_Lose_WW <- M_Lose
-# for (i in 1:n_matches) {
-#   M_Lose_WW[, i] <- M_Lose[, i]
-# }
-# M_Lose <- M_Lose %>% as.matrix()
-# M_Lose_WW <- M_Lose_WW %>% as.matrix()
-# 
-# input_lose_ww_matrix = M_Lose_WW %*% t(M_Lose)
-# for (i in hero$id) {
-#   input_lose_ww_matrix[i, i] = 0
-# }
-# 
-# # Calculate integrated matching scores for paired heroes
-# HWN <- graph.adjacency(adjmatrix = input_win_matrix,
-#                        mode = "upper",
-#                        weighted = TRUE)
-# 
-# V(HWN)$name <- hero_name
-# win_edgelist <- as_edgelist(HWN) %>% as.data.frame()
-# win_edgelist$weight <- E(HWN)$weight
-# 
-# input_total_matrix <- input_win_ww_matrix/( input_lose_ww_matrix + input_win_ww_matrix)
-# input_total_matrix[is.nan(input_total_matrix)] <- 0
-# HTN <- graph.adjacency(adjmatrix = input_total_matrix,
-#                        mode = "upper",
-#                        weighted = TRUE)
-# V(HTN)$name <- hero_name
-# paired_matching_scores <- as_edgelist(HTN) %>% as.data.frame()
-# paired_matching_scores$win_rate <- E(HTN)$weight
-# 
-# paired_matching_scores$score <- paired_matching_scores$win_rate*0.4 + win_edgelist$weight
-# save(paired_matching_scores, "./app/paired_matching_scores.Rdata")
+M_Win_WW <- M_Win
+for (i in 1:n_matches) {
+  M_Win_WW[, i] <- M_Win[, i]
+}
+M_Win <- M_Win %>% as.matrix()
+M_Win_WW <- M_Win %>% as.matrix()
+
+input_win_ww_matrix = M_Win_WW %*% t(M_Win)
+for (i in hero$id) {
+  input_win_ww_matrix[i, i] = 0
+}
+
+M_Lose <- matrix(0,length(hero$id),n_matches) %>% as.data.frame()
+row.names(M_Lose) <- hero$id
+
+for(i in 1:n_matches){
+  colnames(M_Lose)[i] <- Lose_list[[i]]$match_id[1] %>% as.character()
+  M_Lose[c(as.character(Lose_list[[i]]$hero_id)),Lose_list[[i]]$match_id[1] %>% as.character()] = 1
+}
+
+M_Lose_WW <- M_Lose
+for (i in 1:n_matches) {
+  M_Lose_WW[, i] <- M_Lose[, i]
+}
+M_Lose <- M_Lose %>% as.matrix()
+M_Lose_WW <- M_Lose_WW %>% as.matrix()
+
+input_lose_ww_matrix <- M_Lose_WW %*% t(M_Lose)
+for (i in hero$id) {
+  input_lose_ww_matrix[i, i] = 0
+}
+
+# Calculate integrated matching scores for paired heroes
+HWN <- graph.adjacency(adjmatrix = input_win_matrix,
+                       mode = "upper",
+                       weighted = TRUE)
+
+V(HWN)$name <- hero_name
+win_edgelist <- as_edgelist(HWN) %>% as.data.frame()
+win_edgelist$weight <- E(HWN)$weight
+
+input_total_matrix <- input_win_ww_matrix/(input_lose_ww_matrix + input_win_ww_matrix)
+input_total_matrix[is.nan(input_total_matrix)] <- 0
+HTN <- graph.adjacency(adjmatrix = input_total_matrix,
+                       mode = "upper",
+                       weighted = TRUE)
+V(HTN)$name <- hero_name
+paired_matching_scores <- as_edgelist(HTN) %>% as.data.frame()
+paired_matching_scores$win_rate <- E(HTN)$weight
+
+paired_matching_scores$score <- paired_matching_scores$win_rate*0.4 + win_edgelist$weight
+save(paired_matching_scores, "./app/paired_matching_scores.Rdata")
